@@ -1,4 +1,4 @@
-TARGET_NAMES = endpoints
+TARGET_NAMES = endpoints redirect
 
 BUILD_DIR ?= build
 
