@@ -58,3 +58,14 @@ mg_mgr_init(&mgr);
 // POST to a website
 Warthog::http_connect_post(&mgr, "http://httpbin.org/post", post_handler);
 ```
+
+## HTTP Response Status
+Warthog provides the static functions `Warthog::http_status_code` and `Warthog::http_status_message` to extract the status code and message from an HTTP response. These were previously available in the old `http_message` structure as `resp_code` and `resp_status_msg`.
+
+```c++
+struct mg_http_message *hm = (struct mg_http_message*) ev_data;
+
+// Get the code and message
+int code = Warthog::http_status_code(hm);
+std::string message = Warthog::http_status_message(hm);
+```

@@ -70,6 +70,16 @@ class Warthog
       mg_printf(c, body.c_str());
     }
 
+    static int http_status_code(const struct mg_http_message* hm)
+    {
+      return std::stoi(std::string(hm->uri.ptr, hm->uri.len));
+    }
+
+    static std::string http_status_message(const struct mg_http_message* hm)
+    {
+      return std::string(hm->proto.ptr, hm->proto.len);
+    }
+
   private:
     void resolve_endpoint(struct mg_connection* c, int ev, void* ev_data)
     {
