@@ -49,6 +49,27 @@ class Warthog
       mg_printf(c, request.c_str());
     }
 
+    static void http_connect_post(struct mg_mgr* mgr, const std::string& url, mg_event_handler_t handler, void* fn_data = nullptr, const std::string& headers = "", const std::string& body = "")
+    {
+      // Fetch the host and URI components
+      struct mg_str host = mg_url_host(url.c_str());
+      const char* uri = mg_url_uri(url.c_str());
+
+      // Build the request
+      std::string request = "POST " + std::string(uri) + " HTTP/1.0\r\n";
+      request += "Host: " + std::string(host.ptr, host.len) + "\r\n";
+      request += "Content-Length: " + std::to_string(body.length()) + "\r\n";
+      request += headers;
+      request += "\r\n";
+
+      // Create connection
+      struct mg_connection* c = mg_http_connect(mgr, url.c_str(), handler, fn_data);
+
+      // Immediately write request assuming it will send once connected
+      mg_printf(c, request.c_str());
+      mg_printf(c, body.c_str());
+    }
+
   private:
     void resolve_endpoint(struct mg_connection* c, int ev, void* ev_data)
     {

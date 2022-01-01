@@ -1,4 +1,4 @@
-TARGET_NAMES = endpoints redirect http_get
+TARGET_NAMES = endpoints redirect http_get http_post
 
 BUILD_DIR ?= build
 

@@ -46,3 +46,15 @@ mg_mgr_init(&mgr);
 // Fetch a website
 Warthog::http_connect_get(&mgr, "http://google.com", get_handler);
 ```
+
+## HTTP POST
+Warthog provides a static function `Warthog::http_connect_post` which allows easy HTTP POST requests similar to the old functionality provided by `mg_connect_http`. Each request accepts a event handler, an optional user data handler, and optional extra headers and body strings.
+
+See the complete example at `examples/http_post.cpp`.
+```c++
+struct mg_mgr mgr;
+mg_mgr_init(&mgr);
+
+// POST to a website
+Warthog::http_connect_post(&mgr, "http://httpbin.org/post", post_handler);
+```
