@@ -55,10 +55,11 @@ class Warthog
       // Fetch the host and URI components
       struct mg_str host = mg_url_host(url.c_str());
       const char* uri = mg_url_uri(url.c_str());
+      uint16_t port = mg_url_port(url.c_str());
 
       // Build the request
-      std::string request = "GET " + std::string(uri) + " HTTP/1.0\r\n";
-      request += "Host: " + std::string(host.ptr, host.len) + "\r\n";
+      std::string request = "GET " + std::string(uri) + " HTTP/1.1\r\n";
+      request += "Host: " + std::string(host.ptr, host.len) + (port ? (":" + std::to_string(port)) : "") + "\r\n";
       request += "\r\n";
 
       // Create connection
@@ -73,10 +74,11 @@ class Warthog
       // Fetch the host and URI components
       struct mg_str host = mg_url_host(url.c_str());
       const char* uri = mg_url_uri(url.c_str());
+      uint16_t port = mg_url_port(url.c_str());
 
       // Build the request
-      std::string request = "POST " + std::string(uri) + " HTTP/1.0\r\n";
-      request += "Host: " + std::string(host.ptr, host.len) + "\r\n";
+      std::string request = "POST " + std::string(uri) + " HTTP/1.1\r\n";
+      request += "Host: " + std::string(host.ptr, host.len) + (port ? (":" + std::to_string(port)) : "") + "\r\n";
       request += "Content-Length: " + std::to_string(body.length()) + "\r\n";
       request += headers;
       request += "\r\n";
