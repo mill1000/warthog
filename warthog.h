@@ -2,7 +2,6 @@
 #define _WARTHOG_
 
 #include <string>
-#include <iostream>
 #include <unordered_map>
 #include <assert.h>
 
