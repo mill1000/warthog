@@ -4,26 +4,46 @@
 #include <string>
 #include <iostream>
 #include <unordered_map>
+#include <assert.h>
 
 #include "mongoose.h"
 
 class Warthog
 {
   public:
-    void register_endpoint(const std::string& uri, mg_event_handler_t handler, void* fn_data = nullptr)
+    class Timer
     {
-      endpoints[uri] = {.handler = handler, .fn_data = fn_data};
-    }
+      public:
+        struct mg_timer mg_timer;
 
-    void register_default(mg_event_handler_t handler, void* fn_data = nullptr)
-    {
-      default_endpoint = {.handler = handler, .fn_data = fn_data};
-    }
+        typedef void (*timer_handler_t)(Timer* timer, void* fn_data);
 
-    static void mongoose_event_handler(struct mg_connection* c, int ev, void* ev_data, void* fn_data)
-    {
-      ((Warthog*)fn_data)->resolve_endpoint(c, ev, ev_data);
-    }
+        void init(uint32_t ms, uint32_t flags, timer_handler_t handler, void* fn_data = nullptr)
+        {
+          this->handler = handler;
+          this->fn_data = fn_data;
+
+          // Init time with static handler
+          mg_timer_init(&mg_timer, ms, flags, timer_event_handler, this);
+        }
+
+        void release()
+        {
+          // Free the timer from Mongoose
+          mg_timer_free(&mg_timer);
+        }
+
+      private:
+        static void timer_event_handler(void* fn_data)
+        {
+          assert(fn_data);
+          Timer* timer = (Timer*)fn_data;
+          timer->handler(timer, timer->fn_data);
+        }
+
+        timer_handler_t handler;
+        void* fn_data;
+    };
 
     static void http_send_redirect(struct mg_connection* c, int code, const std::string& uri)
     {
@@ -78,6 +98,22 @@ class Warthog
     static std::string http_status_message(const struct mg_http_message* hm)
     {
       return std::string(hm->proto.ptr, hm->proto.len);
+    }
+
+    void register_endpoint(const std::string& uri, mg_event_handler_t handler, void* fn_data = nullptr)
+    {
+      endpoints[uri] = {.handler = handler, .fn_data = fn_data};
+    }
+
+    void register_default(mg_event_handler_t handler, void* fn_data = nullptr)
+    {
+      default_endpoint = {.handler = handler, .fn_data = fn_data};
+    }
+
+    static void mongoose_event_handler(struct mg_connection* c, int ev, void* ev_data, void* fn_data)
+    {
+      assert(fn_data);
+      ((Warthog*)fn_data)->resolve_endpoint(c, ev, ev_data);
     }
 
   private:

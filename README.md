@@ -27,7 +27,7 @@ mg_mgr_init(&mgr);
 mg_http_listen(&mgr, "0.0.0.0:8080", Warthog::mongoose_event_handler, &warthog);
 ```
 
-## Redirect
+## HTTP Redirects
 Warthog provides a static function `Warthog::http_send_redirect` which mimics the old functionality provided by `mg_http_send_redirect` to easily redirect clients.
 
 See the complete example at `examples/redirect.cpp`.
@@ -68,4 +68,16 @@ struct mg_http_message *hm = (struct mg_http_message*) ev_data;
 // Get the code and message
 int code = Warthog::http_status_code(hm);
 std::string message = Warthog::http_status_message(hm);
+```
+
+## Timers
+Warthog provides a `Timer` class that lightly wraps Mongoose's `mg_timer` objects and improves the usability.
+
+See the complete example at `examples/timers.cpp`.
+```c++
+Warthog::Timer timer;
+timer.init(1000, MG_TIMER_REPEAT, [](Warthog::Timer* t, void* fn_data)
+{
+  std::cout << "Heartbeat." << std::endl;
+});
 ```
