@@ -32,6 +32,12 @@ class Warthog
           mg_timer_free(&mg_timer);
         }
 
+        ~Timer()
+        {
+          // Release the timer in case the user didn't
+          release();
+        }
+
       private:
         static void timer_event_handler(void* fn_data)
         {
