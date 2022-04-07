@@ -18,8 +18,8 @@ int main(void)
       struct mg_http_message* hm = (struct mg_http_message*) ev_data;
 
       // Print status code and message
-      std::cout << "GET status code: " << std::to_string(Warthog::http_status_code(hm)) << std::endl;
-      std::cout << "GET status message: " << Warthog::http_status_message(hm) << std::endl;
+      std::cout << "POST status code: " << std::to_string(Warthog::http_status_code(hm)) << std::endl;
+      std::cout << "POST status message: " << Warthog::http_status_message(hm) << std::endl;
 
       // Print entire message
       std::cout << std::string(hm->message.ptr, hm->message.len) << std::endl;
